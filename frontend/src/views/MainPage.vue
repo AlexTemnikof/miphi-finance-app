@@ -45,7 +45,7 @@
                         aria-label="Close"></button>
               </div>
               <div class="modal-body">
-                <!-- Используем компонент ExpenseForm -->
+                <!-- Используем компонент ExpenseForm только если есть категории -->
                 <ExpenseForm :categories="categories" @save="closeModal"/>
               </div>
             </div>
@@ -60,7 +60,7 @@
       <div class="search-column-container left-column">
         <div class="search-column-container">
           <label for="search">Найти операцию</label>
-          <input type="text" id="search" class="input" placeholder="Введите дату, сумму или тип операции"
+          <input type="text" id="search" class="input" placeholder="Введите дату, сумму, тип или id операции"
                  v-model="searchQuery"/>
         </div>
         <!-- Фильтры по дате и объему операции -->
@@ -104,9 +104,18 @@
           </thead>
           <tbody>
           <tr v-for="operation in filteredOperations" :key="operation.id">
-            <td style="width: 27%">{{ operation.date }}</td>
-            <td style="width: 18%">{{ operation.amount }}</td>
-            <td>{{ operation.type }}</td>
+            <td style="width: 27%">
+              {{
+                new Date(operation.date).toLocaleString('ru-RU', {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric',
+                  hour: '2-digit',
+                  minute: '2-digit'
+                })
+              }}
+            </td>            <td style="width: 18%">{{ operation.amount }}</td>
+            <td>{{ operation.operationType === 'INCOME' ? 'Доход' : 'Расход'}}</td>
           </tr>
           </tbody>
         </table>
@@ -169,7 +178,12 @@ export default {
 
     async fetchOperations() {
       this.operations = await api.operations.getAll()
+      console.log('operations are')
+      console.log(this.operations)
     },
+  },
+  async mounted() {
+    await this.fetchOperations();
   },
 }
 ;

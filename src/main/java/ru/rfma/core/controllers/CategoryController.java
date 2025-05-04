@@ -23,8 +23,8 @@ public class CategoryController {
     @GetMapping("/getAll")
     @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
     public ResponseEntity<?> getAll() {
-        System.out.println("coreServiceImpl.getAllCategories()");
-        return new ResponseEntity<>(coreServiceImpl.getAllCategories(), HttpStatus.OK);
+        final var categories = coreServiceImpl.getAllCategories();
+        return new ResponseEntity<>(categories, HttpStatus.OK);
     }
 
     @PostMapping
@@ -33,7 +33,7 @@ public class CategoryController {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             System.out.println("authentication = " + authentication);
-            return new ResponseEntity<>(this.coreServiceImpl.createCategory(categoryDto.getName(), categoryDto.getLimit(), 0), HttpStatus.CREATED);
+            return new ResponseEntity<>(this.coreServiceImpl.createCategory(categoryDto.getName(), categoryDto.getSpendLimit(), 0), HttpStatus.CREATED);
         } catch (RuntimeException e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -60,9 +60,9 @@ public class CategoryController {
 
     @PostMapping("/updatelimit")
     @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
-    public ResponseEntity<?> update(@RequestParam final Integer id, @RequestParam final Float limit) {
+    public ResponseEntity<?> update(@RequestParam final Integer id, @RequestParam final Float spendLimit) {
         try {
-            return new ResponseEntity<>(this.coreServiceImpl.updateCategoryLimit(id, limit), HttpStatus.OK);
+            return new ResponseEntity<>(this.coreServiceImpl.updateCategoryLimit(id, spendLimit), HttpStatus.OK);
         } catch (RuntimeException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

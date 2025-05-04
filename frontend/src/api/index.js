@@ -79,7 +79,7 @@ export const categories = {
 
 export const operations = {
     create: async (operationData) => {
-        return makeRequest(api.post, '/category', operationData);
+        return makeRequest(api.post, '/operation', operationData);
     },
     getAll: async () => {
         return makeRequest(api.get, '/operation/getAll');

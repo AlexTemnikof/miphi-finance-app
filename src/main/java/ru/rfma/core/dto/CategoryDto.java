@@ -6,6 +6,8 @@ import lombok.Setter;
 @Getter
 @Setter
 public class CategoryDto {
+    private int id;
     private String name;
-    private float limit;
+    private Float spendLimit;
+    private int userId;
 }

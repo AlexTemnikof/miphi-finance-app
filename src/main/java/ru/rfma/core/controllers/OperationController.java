@@ -20,7 +20,8 @@ public class OperationController {
     @GetMapping("/getAll")
     @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
     public ResponseEntity<?> getAll() {
-        return new ResponseEntity<>(coreService.getAllOperations(), HttpStatus.OK);
+        final var operations = coreService.getAllOperations();
+        return new ResponseEntity<>(operations, HttpStatus.OK);
     }
 
 

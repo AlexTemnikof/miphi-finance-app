@@ -10,6 +10,7 @@ import ru.rfma.core.mapper.OperationMapper;
 import ru.rfma.core.repo.CategoryRepository;
 import ru.rfma.core.repo.OperationRepository;
 
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -30,15 +31,15 @@ public class CoreServiceImpl {
         this.categoryMapper = categoryMapper;
     }
 
-    public CategoryDto createCategory(final String name, final Float limit, final int userId) {
-        Category category = new Category(name, limit, userId);
+    public CategoryDto createCategory(final String name, final Float spendLimit, final int userId) {
+        Category category = new Category(name, spendLimit, userId);
         categoryRepository.save(category);
         return categoryMapper.toDto(category);
     }
 
     public List<CategoryDto> getAllCategories() {
-        System.out.println("wtf");
-        return categoryMapper.toDtos(categoryRepository.findAll());
+        final List<Category> categories = categoryRepository.findAll();
+        return categoryMapper.toDtos(categories);
     }
 
     public CategoryDto getCategoryById(final Integer id) {
@@ -49,9 +50,9 @@ public class CoreServiceImpl {
         return categoryMapper.toDto(categoryRepository.getCategoryByName(name));
     }
 
-    public CategoryDto updateCategoryLimit(final Integer id, final Float limit) {
+    public CategoryDto updateCategoryLimit(final Integer id, final Float spendLimit) {
          final Category category = categoryRepository.getById(id);
-         category.setSpendLimit(limit);
+         category.setSpendLimit(spendLimit);
          categoryRepository.save(category);
          return categoryMapper.toDto(category);
     }
@@ -61,9 +62,10 @@ public class CoreServiceImpl {
     }
 
     public OperationDto createOperation(final OperationDto operationDto) {
+        operationDto.setDate(new Date());
         Operation operation = operationMapper.toEntity(operationDto);
-        operationRepository.save(operation);
-        return operationMapper.toDto(operation);
+        final var savedOperation = operationRepository.save(operation);
+        return operationMapper.toDto(savedOperation);
     }
 
     public OperationDto getOperationById(final Integer id) {

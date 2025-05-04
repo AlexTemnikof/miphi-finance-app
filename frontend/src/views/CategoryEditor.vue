@@ -26,10 +26,10 @@
         </td>
         <td>
           <template v-if="category.isEditing">
-            <input v-model="category.limit" placeholder="Введите лимит" />
+            <input v-model="category.spendLimit" placeholder="Введите лимит" />
           </template>
           <template v-else>
-            {{ category.limit }}
+            {{ category.spendLimit }}
           </template>
         </td>
         <td>
@@ -64,21 +64,18 @@
 
 <script>
 
-//TODO: Auth check
-
 import * as api from '@/api';
-import {useRouter} from "vue-router";
+import {nextTick} from "vue";
+import router from "@/router";
 
 export default {
   setup() {
-    const router = useRouter();
-
 
     const redirectToLogin = async () => {
-      console.log('redirecting')
-      setTimeout(async () => {
-        await router.push('/login');
-      }, 1)    };
+      console.log('redirecting');
+      await nextTick();
+      await router.push('/login');
+    };
 
     return {
       redirectToLogin
@@ -105,6 +102,7 @@ export default {
         this.categories = data.map(category => ({
           id: category.id,
           name: category.name,
+          spendLimit: category.spendLimit,
           isEditing: false,
           originalName: "",
         }));
@@ -151,7 +149,7 @@ export default {
     async addNewCategory() {
       const data = {
         name: this.newCategoryName,
-        limit: this.categoryLimit
+        spendLimit: this.categoryLimit
       };
 
       await api.categories.create(data);

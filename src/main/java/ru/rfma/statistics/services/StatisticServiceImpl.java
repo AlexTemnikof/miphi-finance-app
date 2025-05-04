@@ -23,7 +23,7 @@ public class StatisticServiceImpl {
         Map<Category, Float> map = new HashMap<>();
         List<Category> categories = categoryRepository.findAll();
         for (Category category : categories) {
-            List<Operation> operations = operationRepository.getOperationsByCategoryIdAndOperationType(category.getId(), OperationType.Expense);
+            List<Operation> operations = operationRepository.getOperationsByCategoryIdAndOperationType(category.getId(), OperationType.EXPENSE);
             for (Operation operation : operations) {
                 updateValueCategoryMap(map, categoryRepository.getCategoryById(operation.getCategoryId()), operation.getAmount());
             }
@@ -35,7 +35,7 @@ public class StatisticServiceImpl {
         Map<Category, Float> map = new HashMap<>();
         List<Category> categories = categoryRepository.findAll();
         for (Category category : categories) {
-            List<Operation> operations = operationRepository.getOperationsByCategoryIdAndOperationType(category.getId(), OperationType.Income);
+            List<Operation> operations = operationRepository.getOperationsByCategoryIdAndOperationType(category.getId(), OperationType.INCOME);
             for (Operation operation : operations) {
                 updateValueCategoryMap(map, categoryRepository.getCategoryById(operation.getCategoryId()), operation.getAmount());
             }
@@ -45,7 +45,7 @@ public class StatisticServiceImpl {
 
     public Map<Integer, Float> getExpensesPerMonth() {
         Map<Integer, Float> map = new HashMap<>();
-        List<Operation> operations = operationRepository.getOperationsByOperationType(OperationType.Expense);
+        List<Operation> operations = operationRepository.getOperationsByOperationType(OperationType.EXPENSE);
         for (Operation operation : operations) {
             updateValueDateMap(map, operation.getDate().getMonth(), operation.getAmount());
         }
@@ -57,7 +57,7 @@ public class StatisticServiceImpl {
         List<Operation> operations = operationRepository.findAll();
         for (Operation operation : operations) {
             if (map.containsKey(operation.getDate().getMonth())) {
-                if (operation.getOperationType() == OperationType.Income) {
+                if (operation.getOperationType() == OperationType.INCOME) {
                     map.put(operation.getDate().getMonth(), map.get(operation.getDate().getMonth()) + operation.getAmount());
                 } else {
                     map.put(operation.getDate().getMonth(), map.get(operation.getDate().getMonth()) - operation.getAmount());
