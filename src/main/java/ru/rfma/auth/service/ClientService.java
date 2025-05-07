@@ -2,8 +2,8 @@ package ru.rfma.auth.service;
 
 import lombok.NonNull;
 import org.springframework.stereotype.Service;
+import ru.rfma.auth.dto.JwtRequestReg;
 import ru.rfma.auth.entity.Client;
-import ru.rfma.auth.enums.Role;
 import ru.rfma.auth.repository.ClientRepository;
 import ru.rfma.core.util.FieldValidator;
 
@@ -20,9 +20,12 @@ public class ClientService {
         return clientRepository.findByLogin(login);
     }
 
-    public Client create(@NonNull String login, char[] password, String email, String name){
+    public Client getById(final int id) {
+        return clientRepository.getById(id);
+    }
 
-        Client client = new Client(login, password, Role.USER, email, name);
+    public Client create(final JwtRequestReg regRequest){
+        Client client = new Client(regRequest);
         clientRepository.save(client);
         return client;
     }

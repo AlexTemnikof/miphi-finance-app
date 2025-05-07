@@ -10,7 +10,11 @@ import java.util.List;
 @Repository
 public interface OperationRepository extends JpaRepository<Operation, Integer> {
 
-    List<Operation> getOperationsByCategoryIdAndOperationType(int id, OperationType operationType);
+    List<Operation> getOperationsByCategoryIdAndOperationTypeAndUserId(int id, OperationType operationType, Integer userId);
 
-    List<Operation> getOperationsByOperationType(OperationType operationType);
+    List<Operation> getOperationsByOperationTypeAndUserId(OperationType operationType, Integer userId);
+
+    List<Operation> findOperationsByUserId(final Integer userId);
+
+    Operation getOperationByUserIdAndId(Integer userId, int id);
 }

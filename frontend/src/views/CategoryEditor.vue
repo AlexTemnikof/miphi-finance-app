@@ -147,6 +147,8 @@ export default {
     },
 
     async addNewCategory() {
+
+      console.log('categoryLimit', this.categoryLimit);
       const data = {
         name: this.newCategoryName,
         spendLimit: this.categoryLimit

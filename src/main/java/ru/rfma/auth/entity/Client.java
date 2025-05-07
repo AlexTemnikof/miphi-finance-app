@@ -2,6 +2,7 @@ package ru.rfma.auth.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import ru.rfma.auth.dto.JwtRequestReg;
 import ru.rfma.auth.enums.Role;
 
 @Getter
@@ -9,26 +10,38 @@ import ru.rfma.auth.enums.Role;
 @NoArgsConstructor
 @Entity
 public class Client {
-    @Getter(AccessLevel.NONE)
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "id", nullable = false)
     private int id;
-
     private String login;
+
+    @Enumerated(EnumType.STRING)
+    private ClientType clientType;
     private char[] password;
     private String email;
     private String name;
 
+    /**
+     * Инн клиента
+     */
+    private String inn;
+    private String bankName;
+    private String phoneNumber;
+
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    public Client(String login, char[] password, Role role, String email, String name) {
-        this.login = login;
-        this.password = password;
-        this.role = role;
-        this.email = email;
-        this.name = name;
+    public Client(final JwtRequestReg regRequest) {
+        this.login = regRequest.login();
+        this.clientType = regRequest.clientType();
+        this.password = regRequest.password().toCharArray();
+        this.email = regRequest.email();
+        this.name = regRequest.name();
+        this.inn = regRequest.inn();
+        this.bankName = regRequest.bankName();
+        this.phoneNumber = regRequest.phoneNumber();
+        this.role = Role.USER;
     }
 
     public void setAdmin(){

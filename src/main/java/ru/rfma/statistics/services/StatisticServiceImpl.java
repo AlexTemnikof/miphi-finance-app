@@ -19,33 +19,33 @@ public class StatisticServiceImpl {
         this.operationRepository = operationRepository;
     }
 
-    public Map<Category, Float> getExpensesPerCategory() {
+    public Map<Category, Float> getExpensesPerCategory(final Integer userId) {
         Map<Category, Float> map = new HashMap<>();
         List<Category> categories = categoryRepository.findAll();
         for (Category category : categories) {
-            List<Operation> operations = operationRepository.getOperationsByCategoryIdAndOperationType(category.getId(), OperationType.EXPENSE);
+            List<Operation> operations = operationRepository.getOperationsByCategoryIdAndOperationTypeAndUserId(category.getId(), OperationType.EXPENSE, userId);
             for (Operation operation : operations) {
-                updateValueCategoryMap(map, categoryRepository.getCategoryById(operation.getCategoryId()), operation.getAmount());
+                updateValueCategoryMap(map, categoryRepository.getCategoryByUserIdAndId(userId, operation.getCategoryId()), operation.getAmount());
             }
         }
         return map;
     }
 
-    public Map<Category, Float> getIncomesPerCategory() {
+    public Map<Category, Float> getIncomesPerCategory(final Integer userId) {
         Map<Category, Float> map = new HashMap<>();
         List<Category> categories = categoryRepository.findAll();
         for (Category category : categories) {
-            List<Operation> operations = operationRepository.getOperationsByCategoryIdAndOperationType(category.getId(), OperationType.INCOME);
+            List<Operation> operations = operationRepository.getOperationsByCategoryIdAndOperationTypeAndUserId(category.getId(), OperationType.INCOME, userId);
             for (Operation operation : operations) {
-                updateValueCategoryMap(map, categoryRepository.getCategoryById(operation.getCategoryId()), operation.getAmount());
+                updateValueCategoryMap(map, categoryRepository.getCategoryByUserIdAndId(operation.getCategoryId(), userId), operation.getAmount());
             }
         }
         return map;
     }
 
-    public Map<Integer, Float> getExpensesPerMonth() {
+    public Map<Integer, Float> getExpensesPerMonth(final Integer userId) {
         Map<Integer, Float> map = new HashMap<>();
-        List<Operation> operations = operationRepository.getOperationsByOperationType(OperationType.EXPENSE);
+        List<Operation> operations = operationRepository.getOperationsByOperationTypeAndUserId(OperationType.EXPENSE, userId);
         for (Operation operation : operations) {
             updateValueDateMap(map, operation.getDate().getMonth(), operation.getAmount());
         }

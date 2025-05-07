@@ -15,14 +15,21 @@ const apiAuth = axios.create({
 api.interceptors.request.use(
     (config) => {
         const accessToken = store.state.accessToken;
+        const clientId = store.state.clientId
+        console.log('interceptor client id');
+        console.log(clientId);
 
         if (accessToken) {
             config.headers.Authorization = `Bearer ${accessToken}`;
+        }
+        if (clientId) {
+            config.headers['X-Client-ID'] = clientId;
         }
         return config;
     },
     (error) => Promise.reject(error)
 );
+
 
 
 apiAuth.interceptors.response.use(
@@ -63,7 +70,7 @@ export const categories = {
         console.log(categoryData);
         return makeRequest(api.post, '/category', {
             name: categoryData.name,
-            limit: categoryData.limit,
+            spendLimit: categoryData.spendLimit,
         });
     },
     getAll: async () => {

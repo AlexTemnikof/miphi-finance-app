@@ -31,7 +31,7 @@
         <!-- Кнопка "Расходы" для открытия модального окна с ExpenseForm -->
         <button type="button" class="btn btn-outline-dark expenses" data-bs-toggle="modal"
                 data-bs-target="#expensesModal">
-          Расходы
+          Операция
         </button>
 
         <!-- Модальное окно для расходов с ExpenseForm -->
@@ -40,7 +40,7 @@
           <div class="modal-dialog">
             <div class="modal-content">
               <div class="modal-header">
-                <h5 class="modal-title" id="expensesModalLabel">Расходы</h5>
+                <h5 class="modal-title" id="expensesModalLabel">Операция</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"
                         aria-label="Close"></button>
               </div>
@@ -100,6 +100,7 @@
             <th>Дата</th>
             <th>Сумма</th>
             <th>Тип операции</th>
+            <th>Описание</th>
           </tr>
           </thead>
           <tbody>
@@ -116,6 +117,7 @@
               }}
             </td>            <td style="width: 18%">{{ operation.amount }}</td>
             <td>{{ operation.operationType === 'INCOME' ? 'Доход' : 'Расход'}}</td>
+            <td>{{ operation.description }}</td>
           </tr>
           </tbody>
         </table>

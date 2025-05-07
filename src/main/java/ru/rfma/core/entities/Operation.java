@@ -3,6 +3,8 @@ package ru.rfma.core.entities;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.lang.Nullable;
+import ru.rfma.auth.entity.ClientType;
+import ru.rfma.core.enums.OperationStatus;
 import ru.rfma.core.enums.OperationType;
 
 import java.util.Date;
@@ -26,6 +28,31 @@ public class Operation {
     @NonNull
     @Column(name = "date")
     private Date date;
+
+    private ClientType receiverType;
+
+    private OperationStatus status;
+
+    /**
+     * Банк отправителя
+     */
+    private String senderBank;
+
+    /**
+     * Банк получателя
+     */
+    private String receiverBank;
+
+    /**
+     * Счет отправителя
+     */
+    private String senderAccountId;
+
+    /**
+     * Счет получателя
+     */
+    private String receiverAccountId;
+    private String receiverPhoneNumber;
     /**
      * Доп. информация
      */
@@ -41,18 +68,6 @@ public class Operation {
     @Column(name="category_id")
     private int categoryId;
 
-    @NonNull
     @Column(name = "user_id")
-    private int userId;
-
-    public Operation(final Float amount, final Date date,
-                     final String description, final OperationType operationType,
-                     final int categoryId, final int userId) {
-        this.amount = amount;
-        this.date = date;
-        this.description= description;
-        this.operationType=operationType;
-        this.categoryId = categoryId;
-        this.userId = userId;
-    }
+    private Integer userId;
 }

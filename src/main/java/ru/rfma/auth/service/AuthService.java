@@ -1,9 +1,13 @@
 package ru.rfma.auth.service;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
 import jakarta.security.auth.message.AuthException;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.security.oauth2.resource.OAuth2ResourceServerProperties;
+import org.springframework.http.HttpRequest;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import ru.rfma.auth.dto.JwtRequest;
@@ -13,10 +17,7 @@ import ru.rfma.auth.entity.Client;
 import ru.rfma.auth.entity.JwtAuthentication;
 import ru.rfma.auth.providers.JwtProvider;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -48,7 +49,7 @@ public class AuthService {
         if (clientByEmailOptional != null) {
             throw new AuthException("The user with such email exists");
         }
-        final Client client = clientService.create(regRequest.login(), regRequest.password().toCharArray(), regRequest.email(), regRequest.name());
+        final Client client = clientService.create(regRequest);
         final String accessToken = jwtProvider.generateAccessToken(client);
         final String refreshToken = jwtProvider.generateRefreshToken(client);
         refreshStorage.put(client.getLogin(), refreshToken);
@@ -58,10 +59,10 @@ public class AuthService {
     public JwtResponse getAccessToken(@NonNull String refreshToken) {
         if (jwtProvider.validateRefreshToken(refreshToken)) {
             final Claims claims = jwtProvider.getRefreshClaims(refreshToken);
-            final String login = claims.getSubject();
-            final String saveRefreshToken = refreshStorage.get(login);
+            final String id = claims.getSubject();
+            final String saveRefreshToken = refreshStorage.get(id);
             if (saveRefreshToken != null && saveRefreshToken.equals(refreshToken)) {
-                final Client client = clientService.getByLogin(login);
+                final Client client = clientService.getById(Integer.valueOf(id));
                 final String accessToken = jwtProvider.generateAccessToken(client);
                 return new JwtResponse(accessToken, null);
             }
@@ -72,10 +73,10 @@ public class AuthService {
     public JwtResponse refresh(@NonNull String refreshToken) throws AuthException {
         if (jwtProvider.validateRefreshToken(refreshToken)) {
             final Claims claims = jwtProvider.getRefreshClaims(refreshToken);
-            final String login = claims.getSubject();
-            final String saveRefreshToken = refreshStorage.get(login);
+            final String id = claims.getSubject();
+            final String saveRefreshToken = refreshStorage.get(id);
             if (saveRefreshToken != null && saveRefreshToken.equals(refreshToken)) {
-                final Client client = clientService.getByLogin(login);
+                final Client client = clientService.getById(Integer.valueOf(id));
                 final String accessToken = jwtProvider.generateAccessToken(client);
                 final String newRefreshToken = jwtProvider.generateRefreshToken(client);
                 refreshStorage.put(client.getLogin(), newRefreshToken);
@@ -87,6 +88,17 @@ public class AuthService {
 
     public JwtAuthentication getAuthInfo() {
         return (JwtAuthentication) SecurityContextHolder.getContext().getAuthentication();
+    }
+
+    public Integer tryGetClientIdFromRequest(final HttpServletRequest request) {
+        final Enumeration<String> headers = request.getHeaders("X-CLIENT-ID");
+        String userId = null;
+
+        if (headers.hasMoreElements()) {
+            userId = headers.nextElement();
+        }
+
+        return userId != null ? Integer.valueOf(userId) : null;
     }
 
 }
