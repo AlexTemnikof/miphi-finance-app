@@ -24,8 +24,6 @@ public class CoreServiceImpl {
     private final OperationMapper operationMapper;
     private final CategoryMapper categoryMapper;
 
-    private static List<OperationStatus>
-
     public CoreServiceImpl(final CategoryRepository categoryRepository,
                            final OperationRepository operationRepository,
                            final OperationMapper operationMapper,

@@ -20,7 +20,7 @@
       <div class="mb-3">
         <label for="amountInput" class="form-label">Выберите статус операции:</label>
         <select class="form-select" id="statusDropdown" v-model="selectedOperationStatus">
-          <option v-for="type in operationTypes" :key="type.value" :value="type.value">{{ type.label }}</option>
+          <option v-for="type in operationStatuses" :key="type.value" :value="type.value">{{ type.label }}</option>
         </select>
       </div>
       <div class="mb-3">
@@ -62,6 +62,8 @@ import * as api from '@/api';
 import OperationType from "@/data/OperationType";
 import OperationStatus from "@/data/OperationStatus";
 import operationStatus from "@/data/OperationStatus";
+import {nextTick} from "vue";
+import router from "@/router";
 
 export default {
   data() {
@@ -96,6 +98,12 @@ export default {
   },
   methods: {
 
+    async redirectToLogin() {
+      console.log('redirecting');
+      await nextTick();
+      await router.push('/login');
+    },
+
     async fetchData() {
       try {
         const data = await api.categories.getAll();
@@ -111,7 +119,7 @@ export default {
       } catch (err) {
         console.log("reposnse error");
         if (err.response && err.response.status === 403) {
-          await this.redirectToLogin(); // Вызываем редирект при ошибке 403
+          await this.redirectToLogin();
         }
       }
     },

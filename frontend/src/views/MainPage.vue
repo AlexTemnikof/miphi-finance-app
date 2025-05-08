@@ -100,6 +100,10 @@
             <th>Дата</th>
             <th>Сумма</th>
             <th>Тип операции</th>
+            <th>Статус операции</th>
+            <th>Номер счета получателя</th>
+            <th>Банк получателя</th>
+            <th>Номер телефона получателя</th>
             <th>Описание</th>
           </tr>
           </thead>
@@ -117,6 +121,10 @@
               }}
             </td>            <td style="width: 18%">{{ operation.amount }}</td>
             <td>{{ operation.operationType === 'INCOME' ? 'Доход' : 'Расход'}}</td>
+            <td>{{ operation.status }}</td>
+            <td>{{ operation.receiverAccountId }}</td>
+            <td>{{ operation.receiverBank }}</td>
+            <td>{{ operation.receiverPhoneNumber }}</td>
             <td>{{ operation.description }}</td>
           </tr>
           </tbody>

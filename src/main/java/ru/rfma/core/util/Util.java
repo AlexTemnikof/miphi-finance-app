@@ -50,4 +50,34 @@ public class Util {
 
         return differences;
     }
+
+    public static void uncheck(final ThrowingRunnable runnable) {
+        try {
+            runnable.run();
+        } catch (Exception e) {
+            if (e instanceof InterruptedException) {
+                Thread.currentThread().interrupt();
+            }
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static <T> T uncheck(final ThrowingSupplier<T> supplier) {
+        try {
+            return supplier.get();
+        } catch (Exception e) {
+            if (e instanceof InterruptedException) {
+                Thread.currentThread().interrupt();
+            }
+            throw new RuntimeException(e);
+        }
+    }
+
+    public interface ThrowingRunnable {
+        void run() throws Exception;
+    }
+
+    public interface ThrowingSupplier<T> {
+        T get() throws Exception;
+    }
 }
