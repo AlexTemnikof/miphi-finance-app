@@ -2,11 +2,16 @@ package ru.rfma.report;
 
 public enum ReportType {
 
-    OPERATIONS("");
+    TRANSACTIONS_COUNT("transactions_count"),
+    TRANSACTIONS_TYPE("transactions_type"),
+    PROFIT("profit"),
+    TRANSACTIONS_STATUS("transactions_status"),
+    BANKS("banks"),
+    CATEGORIES("categories");
 
     final String fileName;
 
-    ReportType(String name) {
-        this.fileName = name;
+    ReportType(String fileName) {
+        this.fileName = fileName;
     }
 }
