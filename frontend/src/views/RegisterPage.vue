@@ -23,7 +23,7 @@
 
     <div>
       <input
-          v-model="formattedPhoneNumber"
+          v-model="data.phoneNumber"
           type="text"
           class="form-control"
           placeholder="Phone number"
@@ -80,20 +80,6 @@ export default {
       const isValid = /^\d{11}$/.test(inn);
       this.innError = !isValid;
     },
-    formatPhoneNumber() {
-      let value = this.phoneNumber.replace(/\D/g, ''); // Убираем все нецифровые символы
-      if (value.length === 0) {
-        this.phoneNumber = '';
-        return;
-      }
-      if (value[0] === '8') {
-        value = value.replace(/^8/, '7'); // Заменяем 8 на 7
-      }
-      if (value.length > 11) {
-        value = value.slice(0, 11); // Ограничиваем длину номера
-      }
-      this.phoneNumber = value;
-    }
   },
   setup() {
     const data = reactive({
@@ -101,7 +87,7 @@ export default {
       clientType: null,
       inn: null,
       bankName: null,
-      phoneNumber: null,
+      phoneNumber: "+7",
       login: '',
       email: '',
       password: ''
@@ -109,6 +95,26 @@ export default {
     const router = useRouter();
     const showSuccessAlert = ref(false);
     const showErrorAlert = ref(false);
+
+    const formatPhoneNumber = () => {
+      let value = data.phoneNumber.replace(/\D/g, ''); // Убираем нечисловые символы
+      if (value.length === 0) {
+        data.phoneNumber = ''; // Если номер пустой
+        return;
+      }
+
+
+      // Ограничиваем длину номера до 10 цифр
+      if (value.length > 10) {
+        value = value.slice(0, 10); // Сохраняем только 10 цифр
+      }
+
+      // Присваиваем номер с кодом страны
+      data.phoneNumber = `+${value}`; // Используем шаблонные строки
+    };
+
+
+
 
     const submit = async () => {
       try {
@@ -134,6 +140,7 @@ export default {
       data,
       showSuccessAlert,
       showErrorAlert,
+      formatPhoneNumber,
       submit
     }
   }

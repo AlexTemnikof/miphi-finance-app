@@ -31,7 +31,6 @@ api.interceptors.request.use(
 );
 
 
-
 apiAuth.interceptors.response.use(
     (response) => response.data,
     (error) => Promise.reject(error)
@@ -83,6 +82,33 @@ export const categories = {
         return makeRequest(api.delete(), `/category/${id}`);
     },
 }
+
+export const reports = {
+    download: async (buildReportDTO) => {
+        const response = await makeRequest(api.post, '/report', buildReportDTO);
+
+        // Создаем Blob из ответа
+        const blob = new Blob([response.data], {type: 'application/octet-stream'});
+
+        // Создаем URL для Blob
+        const url = window.URL.createObjectURL(blob);
+
+        // Создаем временный элемент <a> для скачивания
+        const a = document.createElement('a');
+        a.style.display = 'none';
+        a.href = url;
+        a.download = 'report.xlsx'; // Задаем имя файла
+
+        // Добавляем элемент <a> в документ и инициируем клик
+        document.body.appendChild(a);
+        a.click();
+
+        // Удаляем элемент <a> из документа
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+    }
+}
+
 
 export const operations = {
     create: async (operationData) => {

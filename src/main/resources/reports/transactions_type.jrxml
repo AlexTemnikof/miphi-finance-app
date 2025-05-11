@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports"
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
               xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
-              name="PROFIT"
+              name="TRANSACTIONS_TYPE"
               pageWidth="595"
               pageHeight="842"
               columnWidth="555"
@@ -11,24 +11,20 @@
     <parameter name="title" class="java.lang.String"/>
     <parameter name="from" class="java.util.Date"/>
     <parameter name="to" class="java.util.Date"/>
+    <parameter name="userId" class="java.lang.String"/>
 
     <queryString language="sql">
         <![CDATA[
-            SELECT SUM(CASE
-                       WHEN operation_type = 'INCOME' THEN amount
-                       ELSE 0
-                       END) AS total_income,
-                   SUM(CASE
-                       WHEN operation_type = 'EXPENSE' THEN amount
-                       ELSE 0
-                       END) AS total_expense
-            FROM operations
-            WHERE operation_date BETWEEN $P{from} AND $P{to}
+            SELECT operation.operation_type, COUNT(*) AS transaction_count, SUM(operation.amount) AS total_amount
+            FROM operation
+            WHERE date BETWEEN $P{from} AND $P{to} AND CAST(operation.user_id AS VARCHAR) = $P{userId}
+            GROUP BY operation.operation_type;
         ]]>
     </queryString>
 
-    <field name="total_income" class="java.lang.Double"/>
-    <field name="total_expense" class="java.lang.Double"/>
+    <field name="operation_type" class="java.lang.String"/>
+    <field name="transaction_count" class="java.lang.Integer"/>
+    <field name="total_amount" class="java.lang.Double"/>
 
     <title>
         <band height="50">
@@ -49,14 +45,21 @@
                 <box>
                     <pen lineWidth="0.75"/>
                 </box>
-                <text><![CDATA[Total Income]]></text>
+                <text><![CDATA[Operation Type]]></text>
             </staticText>
             <staticText>
-                <reportElement x="200" y="0" width="355" height="30"/>
+                <reportElement x="200" y="0" width="200" height="30"/>
                 <box>
                     <pen lineWidth="0.75"/>
                 </box>
-                <text><![CDATA[Total Expense]]></text>
+                <text><![CDATA[Transaction Count]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="400" y="0" width="200" height="30"/>
+                <box>
+                    <pen lineWidth="0.75"/>
+                </box>
+                <text><![CDATA[Total Amount]]></text>
             </staticText>
         </band>
     </columnHeader>
@@ -68,20 +71,22 @@
                 <box>
                     <pen lineWidth="0.75"/>
                 </box>
-                <textFieldExpression><![CDATA[$F{total_income}]]></textFieldExpression>
+                <textFieldExpression><![CDATA[$F{operation_type}]]></textFieldExpression>
             </textField>
             <textField>
-                <reportElement x="200" y="0" width="355" height="30"/>
+                <reportElement x="200" y="0" width="200" height="30"/>
                 <box>
                     <pen lineWidth="0.75"/>
                 </box>
-                <textFieldExpression><![CDATA[$F{total_expense}]]></textFieldExpression>
+                <textFieldExpression><![CDATA[$F{transaction_count}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="400" y="0" width="200" height="30"/>
+                <box>
+                    <pen lineWidth="0.75"/>
+                </box>
+                <textFieldExpression><![CDATA[$F{total_amount}]]></textFieldExpression>
             </textField>
         </band>
     </detail>
-
-    <summary>
-        <band height="50"/>
-    </summary>
-
 </jasperReport>

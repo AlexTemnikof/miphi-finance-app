@@ -61,6 +61,7 @@ public class Operation {
     private String description;
 
     @NonNull
+    @Enumerated(value = EnumType.STRING)
     @Column(name = "operation_type")
     private OperationType operationType;
 

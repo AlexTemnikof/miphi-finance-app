@@ -19,7 +19,7 @@ import static ru.rfma.core.util.Util.uncheck;
 @Component
 public class JasperReportCompiler {
 
-    private final String reportsPath = "/path/to/reports"; // Замените на ваш путь
+    private final String reportsPath = "/reports"; // Замените на ваш путь
     private final List<JasperReport> jasperReports = new ArrayList<>();
 
     @EventListener(ApplicationReadyEvent.class)

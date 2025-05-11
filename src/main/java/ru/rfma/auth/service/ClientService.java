@@ -1,6 +1,8 @@
 package ru.rfma.auth.service;
 
 import lombok.NonNull;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.rfma.auth.dto.JwtRequestReg;
 import ru.rfma.auth.entity.Client;
@@ -12,8 +14,11 @@ public class ClientService {
 
     ClientRepository clientRepository;
 
+    private final PasswordEncoder passwordEncoder;
+
     public ClientService(ClientRepository clientRepository){
         this.clientRepository = clientRepository;
+        this.passwordEncoder = new BCryptPasswordEncoder();
     }
 
     public Client getByLogin(@NonNull String login) {
@@ -24,8 +29,8 @@ public class ClientService {
         return clientRepository.getById(id);
     }
 
-    public Client create(final JwtRequestReg regRequest){
-        Client client = new Client(regRequest);
+    public Client create(final JwtRequestReg regRequest, final char[] password){
+        Client client = new Client(regRequest, password);
         clientRepository.save(client);
         return client;
     }

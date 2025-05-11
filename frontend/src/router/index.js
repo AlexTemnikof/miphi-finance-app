@@ -1,6 +1,7 @@
 import {createRouter, createWebHistory} from 'vue-router'
 import Login from '@/views/LoginPage.vue';
 import Register from '@/views/RegisterPage.vue';
+import Reports from '@/views/ReportsPage.vue';
 import MainPage from '@/views/MainPage.vue';
 import store from '../store';
 import EducationalResources from "@/views/EducationalResources.vue";
@@ -11,6 +12,7 @@ import EduThree from "@/views/EduThree.vue";
 
 const routes = [
     { path: '/login', component: Login, meta: { guest: true } },
+    {path: '/reports', component: Reports, meta: { requiresAuth: true}},
     { path: '/register', component: Register, meta: { guest: true } },
     { path: '/', component: MainPage, meta: { requiresAuth: true } },
     { path: "/educational-resources", component: EducationalResources, meta: { guest: true } },

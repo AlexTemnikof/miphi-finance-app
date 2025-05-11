@@ -2,6 +2,7 @@
   <nav style="background: #736a67" class="navbar navbar-expand-md navbar-dark mb-4">
     <div class="container-fluid">
       <router-link to="/" class="navbar-brand">Home</router-link>
+      <router-link to="/reports" class="navbar-brand" v-if="auth">Отчеты</router-link>
       <router-link to="/educational-resources" class="navbar-brand">Образовательные ресурсы</router-link>
 
       <div>

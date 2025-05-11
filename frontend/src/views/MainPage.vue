@@ -61,7 +61,7 @@
         <div class="search-column-container">
           <label for="search">Найти операцию</label>
           <input type="text" id="search" class="input" placeholder="Введите дату, сумму, тип или id операции"
-                 v-model="searchQuery"/>
+                 v-model="searchQuery" autocomplete="off"/>
         </div>
         <!-- Фильтры по дате и объему операции -->
         <div class="search-column-container filters">
@@ -105,6 +105,7 @@
             <th>Банк получателя</th>
             <th>Номер телефона получателя</th>
             <th>Описание</th>
+            <th>Действия</th>
           </tr>
           </thead>
           <tbody>
@@ -126,6 +127,16 @@
             <td>{{ operation.receiverBank }}</td>
             <td>{{ operation.receiverPhoneNumber }}</td>
             <td>{{ operation.description }}</td>
+            <td>
+              <template v-if="operation.isEditing">
+                <span style="cursor: pointer;">✔️</span>
+                <span style="cursor: pointer;">✘</span>
+              </template>
+              <template v-else>
+                <span style="cursor: pointer;">✎</span>
+                <span style="cursor: pointer;">🗑</span>
+              </template>
+            </td>
           </tr>
           </tbody>
         </table>
@@ -174,8 +185,8 @@ export default {
 
         const searchCondition =
             !this.searchQuery ||
-            operation.date.includes(this.searchQuery) ||
-            operation.type.includes(this.searchQuery);
+            (operation.date && operation.date.includes(this.searchQuery)) ||
+            (operation.type && operation.type.value.includes(this.searchQuery));
 
         return dateCondition && amountCondition && searchCondition;
       });

@@ -32,10 +32,10 @@ public class Client {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    public Client(final JwtRequestReg regRequest) {
+    public Client(final JwtRequestReg regRequest, final char[] password) {
         this.login = regRequest.login();
         this.clientType = regRequest.clientType();
-        this.password = regRequest.password().toCharArray();
+        this.password = password;
         this.email = regRequest.email();
         this.name = regRequest.name();
         this.inn = regRequest.inn();

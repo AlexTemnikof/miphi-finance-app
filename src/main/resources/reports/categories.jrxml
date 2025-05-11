@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports"
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-              xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreports.xsd"
-              name="SimpleReport"
+              xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
+              name="CATEGORIES"
               pageWidth="595"
               pageHeight="842"
               columnWidth="555"
@@ -20,9 +20,8 @@
         ]]>
     </queryString>
 
-
-    <field name="transaction_count" class="java.lang.Integer"/>
-    <field name="transaction_date" class="java.util.Date"/>
+    <field name="category_name" class="java.lang.String"/>
+    <field name="operations_amount" class="java.lang.Integer"/>
 
     <title>
         <band height="50">
@@ -37,11 +36,17 @@
         <band height="30">
             <staticText>
                 <reportElement x="0" y="0" width="200" height="30"/>
-                <text><![CDATA[Transaction Count]]></text>
+                <box>
+                    <pen lineWidth="0.75"/>
+                </box>
+                <text><![CDATA[Наименование категории]]></text>
             </staticText>
             <staticText>
                 <reportElement x="200" y="0" width="355" height="30"/>
-                <text><![CDATA[Transaction Date]]></text>
+                <box>
+                    <pen lineWidth="0.75"/>
+                </box>
+                <text><![CDATA[Количество операций]]></text>
             </staticText>
         </band>
     </columnHeader>
@@ -50,11 +55,17 @@
         <band height="30">
             <textField>
                 <reportElement x="0" y="0" width="200" height="30"/>
-                <textFieldExpression><![CDATA[$F{transaction_count}]]></textFieldExpression>
+                <box>
+                    <pen lineWidth="0.75"/>
+                </box>
+                <textFieldExpression><![CDATA[$F{category_name}]]></textFieldExpression>
             </textField>
             <textField>
                 <reportElement x="200" y="0" width="355" height="30"/>
-                <textFieldExpression><![CDATA[$F{transaction_date}]]></textFieldExpression>
+                <box>
+                    <pen lineWidth="0.75"/>
+                </box>
+                <textFieldExpression><![CDATA[$F{operations_amount}]]></textFieldExpression>
             </textField>
         </band>
     </detail>

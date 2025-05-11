@@ -9,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.OAuth2ResourceServerProperties;
 import org.springframework.http.HttpRequest;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.rfma.auth.dto.JwtRequest;
 import ru.rfma.auth.dto.JwtRequestReg;
@@ -20,17 +22,24 @@ import ru.rfma.auth.providers.JwtProvider;
 import java.util.*;
 
 @Service
-@RequiredArgsConstructor
 public class AuthService {
 
     private final ClientService clientService;
     private final Map<String, String> refreshStorage = new HashMap<>();
     private final JwtProvider jwtProvider;
 
+    final PasswordEncoder passwordEncoder;
+
+    public AuthService(final ClientService clientService, final JwtProvider jwtProvider) {
+        this.clientService = clientService;
+        this.jwtProvider = jwtProvider;
+        this.passwordEncoder = new BCryptPasswordEncoder();
+    }
+
     public JwtResponse login(@NonNull JwtRequest authRequest) throws AuthException {
         final Client client = clientService.getByLogin(authRequest.getLogin());
 
-        if (Arrays.equals(client.getPassword(), authRequest.getPassword())) {
+        if (checkPassword(authRequest.getPassword(), client.getPassword())) {
             final String accessToken = jwtProvider.generateAccessToken(client);
             final String refreshToken = jwtProvider.generateRefreshToken(client);
             refreshStorage.put(client.getLogin(), refreshToken);
@@ -49,7 +58,9 @@ public class AuthService {
         if (clientByEmailOptional != null) {
             throw new AuthException("The user with such email exists");
         }
-        final Client client = clientService.create(regRequest);
+
+        final char[] encodedPassword = passwordEncoder.encode(regRequest.password()).toCharArray();
+        final Client client = clientService.create(regRequest, encodedPassword);
         final String accessToken = jwtProvider.generateAccessToken(client);
         final String refreshToken = jwtProvider.generateRefreshToken(client);
         refreshStorage.put(client.getLogin(), refreshToken);
@@ -99,6 +110,10 @@ public class AuthService {
         }
 
         return userId != null ? Integer.valueOf(userId) : null;
+    }
+
+    public boolean checkPassword(char[] rawPassword, char[] storedHashedPassword) {
+        return passwordEncoder.matches(new String(rawPassword), new String(storedHashedPassword));
     }
 
 }

@@ -122,11 +122,12 @@ export default {
     },
 
     async saveCategory(category) {
-
       try {
+        category.isEditing = false;
+
         await api.categories.update(category.id, { name: category.name });
 
-        category.isEditing = false;
+        console.log('savinnggg');
         category.originalName = category.name;
 
         await this.fetchData();
